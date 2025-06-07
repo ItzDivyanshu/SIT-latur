@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TripFactory-style Destinations Dropdown CSS */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 32px 40px;
+  z-index: 1000;
+  min-width: 800px;
+  border-radius: 0 0 8px 8px;
+}
+
+.dropdown-grid {
+  display: flex;
+  gap: 60px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.dropdown-column {
+  min-width: 150px;
+}
+
+.dropdown-region {
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: #6c757d;
+  letter-spacing: 1.5px;
+}
+
+.dropdown-country a {
+  color: #222;
+  text-decoration: none;
+  font-size: 15px;
+  display: block;
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+
+.dropdown-country a:hover {
+  color: #e74c3c;
+  text-decoration: underline;
+}
+
+.dropdown-menu {
+  animation: fadeIn 0.25s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive (optional) */
+@media (max-width: 900px) {
+  .dropdown-menu {
+    min-width: 90vw;
+    padding: 20px 8px;
+  }
+  .dropdown-grid {
+    gap: 20px;
+  }
+  .dropdown-column {
+    min-width: 100px;
+  }
+}
