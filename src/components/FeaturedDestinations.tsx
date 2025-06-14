@@ -67,15 +67,18 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ dest, isHovered, onHo
         </div>
       </div>
       
-      <button className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors flex items-center justify-center hover:shadow-lg">
+      <a 
+        href={`/destinations/${dest.id}`}
+        className="w-full mt-4 inline-flex items-center justify-center bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors hover:shadow-lg"
+      >
         Book Now <ArrowRight className="ml-2 h-4 w-4" />
-      </button>
+      </a>
     </div>
   </div>
 );
 
 const FeaturedDestinations: React.FC = () => {
-  const featuredDestinations = destinations.filter(dest => dest.featured);
+  const featuredDestinations = [...destinations].filter(dest => dest.featured);
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   // Enhance destinations with additional data
@@ -96,12 +99,12 @@ const FeaturedDestinations: React.FC = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">This Month's Top Travel Destinations</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">This Month's <span className="text-[#FF0000]">Top Travel</span> Destinations</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">Limited-time offers on the most loved locations – don't miss out!</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {enhancedDestinations.slice(0, 4).map((dest) => (
+          {enhancedDestinations.map((dest) => (
             <DestinationCard 
               key={dest.id} 
               dest={dest} 
@@ -109,15 +112,6 @@ const FeaturedDestinations: React.FC = () => {
               onHover={setHoveredCard}
             />
           ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <a 
-            href="/all-destinations" 
-            className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg border-2 border-transparent hover:border-red-800"
-          >
-            View All Destinations <ArrowRight className="ml-2 h-5 w-5" />
-          </a>
         </div>
       </div>
     </section>

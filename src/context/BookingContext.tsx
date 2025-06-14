@@ -2,7 +2,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type BookingContextType = {
   isBookingOpen: boolean;
-  openBooking: () => void;
+  selectedDestination: string | null;
+  openBooking: (destination?: string) => void;
   closeBooking: () => void;
 };
 
@@ -10,19 +11,20 @@ const BookingContext = createContext<BookingContextType | undefined>(undefined);
 
 export const BookingProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
 
-  const openBooking = () => {
-    console.log('Opening booking form');
+  const openBooking = (destination?: string) => {
+    if (destination) setSelectedDestination(destination);
     setIsBookingOpen(true);
   };
 
   const closeBooking = () => {
-    console.log('Closing booking form');
     setIsBookingOpen(false);
+    setSelectedDestination(null);
   };
 
   return (
-    <BookingContext.Provider value={{ isBookingOpen, openBooking, closeBooking }}>
+    <BookingContext.Provider value={{ isBookingOpen, selectedDestination, openBooking, closeBooking }}>
       {children}
     </BookingContext.Provider>
   );

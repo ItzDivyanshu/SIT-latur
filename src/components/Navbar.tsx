@@ -55,8 +55,12 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <a href="/" className="text-2xl font-bold text-primary">
-              SIT <span className="text-primary-dark">Latur</span>
+            <a href="/" className="flex items-center">
+              <img 
+                src="/media/logo.png" 
+                alt="SIT Latur Logo" 
+                className="h-16 w-auto" // Adjust height as needed
+              />
             </a>
           </div>
 
@@ -99,9 +103,6 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
-            <a href="/packages" className={`${navTextColor} hover:text-red-600 transition-colors font-medium`}>
-              Packages
-            </a>
             <a href="/about" className={`${navTextColor} hover:text-red-600 transition-colors font-medium`}>
               About Us
             </a>
@@ -137,7 +138,6 @@ const Navbar: React.FC = () => {
           <div className="container mx-auto px-4 pt-4 pb-6">
             <div className="space-y-4">
               <a href="/" className="block py-2 text-gray-800 font-medium">Home</a>
-              <a href="/packages" className="block py-2 text-gray-800 font-medium">Packages</a>
               <a href="/about" className="block py-2 text-gray-800 font-medium">About Us</a>
               <a href="/contact" className="block py-2 text-gray-800 font-medium">Contact</a>
               <div className="pt-2">

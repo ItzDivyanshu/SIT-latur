@@ -1,7 +1,9 @@
 import React from 'react';
 import { Users, Car, Shield, Clock, MapPin, Phone } from 'lucide-react';
+import { useBooking } from '../context/BookingContext';
 
 const AboutPage: React.FC = () => {
+  const { openBooking } = useBooking();
   const stats = [
     { number: '100+', label: 'Domestic Routes' },
     { number: '7', label: 'International Routes' },
@@ -206,12 +208,12 @@ const AboutPage: React.FC = () => {
               extensive network, and customer satisfaction makes us the preferred choice for travelers across India.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/quote" 
+              <button 
+                onClick={() => openBooking()}
                 className="bg-white text-primary hover:bg-gray-100 px-8 py-3 rounded-md font-semibold transition-colors"
               >
                 Get a Quote
-              </a>
+              </button>
               <a 
                 href="/contact" 
                 className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-3 rounded-md font-semibold transition-colors flex items-center justify-center"

@@ -35,52 +35,13 @@ const ContactPage: React.FC = () => {
     }, 1500);
   };
 
-  const contactInfo = [
-    {
-      icon: <Phone className="h-8 w-8" />,
-      title: 'Call Us',
-      primary: '+91 98765 43210',
-      secondary: '+91 87654 32109',
-      description: 'Available 24/7 for immediate assistance',
-      bgColor: 'bg-blue-50',
-      iconColor: 'text-blue-600'
-    },
-    {
-      icon: <Mail className="h-8 w-8" />,
-      title: 'Email Us',
-      primary: 'info@sitlatur.com',
-      secondary: 'bookings@sitlatur.com',
-      description: 'We respond within 2 hours',
-      bgColor: 'bg-green-50',
-      iconColor: 'text-green-600'
-    },
-    {
-      icon: <MapPin className="h-8 w-8" />,
-      title: 'Visit Us',
-      primary: '123 Travel Street',
-      secondary: 'Latur, Maharashtra 413512',
-      description: 'Open Mon-Sat 9AM-8PM',
-      bgColor: 'bg-purple-50',
-      iconColor: 'text-purple-600'
-    },
-    {
-      icon: <Headphones className="h-8 w-8" />,
-      title: 'Support',
-      primary: '24/7 Customer Care',
-      secondary: 'Live Chat Available',
-      description: 'Always here to help you',
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-orange-600'
-    }
-  ];
 
   const offices = [
   {
     city: 'Latur (Head Office)',
-    address: '123 Travel Street, Latur, Maharashtra 413512',
-    phone: '+91 98765 43210',
-    email: 'latur@sitlatur.com',
-    manager: 'Rajesh Kumar'
+    address: 'Shop No.02, Avanti Nagar Ring Road, Beside Kailash Bar, Opp. MIDC Police Station, MIDC, Latur, Maharashtra – 413512',
+    phone: '+91 8178840574',
+    email: 'southinternationaltravels@gmail.com',
   }
 ];
 
@@ -148,7 +109,7 @@ const ContactPage: React.FC = () => {
       </section>
 
       {/* Enhanced Contact Info Cards */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
+      <section className="pt-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
@@ -157,28 +118,12 @@ const ContactPage: React.FC = () => {
                 Choose your preferred way to connect with us. We're committed to providing exceptional service and quick responses.
               </p>
             </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {contactInfo.map((info, index) => (
-                <div key={index} className={`${info.bgColor} rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-white/50`}>
-                  <div className={`inline-flex items-center justify-center w-16 h-16 ${info.iconColor} rounded-full bg-white/80 mb-6 shadow-lg`}>
-                    {info.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">{info.title}</h3>
-                  <div className="space-y-2 mb-4">
-                    <p className="text-gray-700 font-semibold text-lg">{info.primary}</p>
-                    <p className="text-gray-600">{info.secondary}</p>
-                  </div>
-                  <p className="text-gray-600 text-sm font-medium">{info.description}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
       {/* Contact Form & Map */}
-      <section id="contact-form" className="py-20 bg-white">
+      <section id="contact-form" className="pt-0 pb-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16">
@@ -320,16 +265,19 @@ const ContactPage: React.FC = () => {
               <div>
                 <h2 className="text-3xl font-bold text-gray-800 mb-6">Visit Our Offices</h2>
                 
-                {/* Enhanced Map Placeholder */}
-                <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl h-80 mb-8 flex items-center justify-center shadow-inner">
-                  <div className="text-center text-gray-500">
-                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <MapPin className="h-10 w-10 text-primary" />
-                    </div>
-                    <p className="font-semibold text-lg text-gray-700 mb-2">Interactive Map</p>
-                    <p className="text-gray-600">123 Travel Street, Latur, Maharashtra</p>
-                    <p className="text-sm text-gray-500 mt-2">Click to view in Google Maps</p>
-                  </div>
+                {/* Google Maps Embed */}
+                <div className="rounded-2xl overflow-hidden shadow-lg mb-8">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30284.826643513385!2d76.52345336840959!3d18.41089590951028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcf81d8b6548251%3A0x7bd5b3617a45327!2sSIT%20Latur%20(South%20International%20Travels%20Latur)!5e0!3m2!1sen!2sin!4v1749910857270!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="450" 
+                    style={{ border: 0 }} 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="SIT Latur Location"
+                    className="w-full h-96 rounded-2xl"
+                  ></iframe>
                 </div>
 
                 {/* Enhanced Office Locations */}
@@ -355,10 +303,6 @@ const ContactPage: React.FC = () => {
                         <div className="flex items-center">
                           <Mail className="h-4 w-4 mr-3 text-primary flex-shrink-0" />
                           <span className="text-gray-600">{office.email}</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Users className="h-4 w-4 mr-3 text-primary flex-shrink-0" />
-                          <span className="text-gray-600">Manager: {office.manager}</span>
                         </div>
                       </div>
                     </div>

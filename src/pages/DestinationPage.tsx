@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { destinations } from '../data/destinations';
+import { useBooking } from '../context/BookingContext';
 import { Calendar, MapPin, Clock, Users } from 'lucide-react';
 
 const DestinationPage: React.FC = () => {
+  const { openBooking } = useBooking();
   const { id } = useParams<{ id: string }>();
   const destination = destinations.find(dest => dest.id === id);
 
@@ -110,12 +112,13 @@ const DestinationPage: React.FC = () => {
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-500">Starting from</p>
                 <p className="text-2xl font-bold text-gray-800">{destination.price}</p>
-                <a 
-                  href="/quote"
-                  className="mt-4 block bg-primary hover:bg-primary-dark text-white text-center py-3 rounded-md transition-colors"
+                <button
+                  type="button"
+                  onClick={() => openBooking(destination.name)}
+                  className="mt-4 w-full block bg-primary hover:bg-primary-dark text-white text-center py-3 rounded-md transition-colors"
                 >
                   Book Now
-                </a>
+                </button>
               </div>
             </div>
           </div>

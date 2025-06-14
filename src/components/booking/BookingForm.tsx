@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { useBooking } from '../../context/BookingContext';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '../../lib/utils';
+import { destinations } from '../../data/destinations';
 
 type TravelWith = 'solo' | 'couple' | 'family' | 'friends' | '';
 
@@ -25,10 +26,7 @@ interface SubmitStatus {
   message: string;
 }
 
-// Constants
-const DESTINATIONS = [
-  'Maldives', 'Bali', 'Dubai', 'Singapore', 'Thailand', 'Europe', 'USA'
-] as const;
+// The hardcoded destinations array has been removed and is now imported.
 
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -62,13 +60,14 @@ const validatePhone = (phone: string) => /^[0-9]{10}$/.test(phone);
 
 // Define the component
 const BookingForm = (): JSX.Element | null => {
-  const { isBookingOpen, closeBooking } = useBooking();
+  const { isBookingOpen, closeBooking, selectedDestination } = useBooking();
   const [step, setStep] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState<FormData>({
-    destination: '',
+    destination: selectedDestination || '',
     travelMonth: '',
     departureDate: '',
     departureCity: '',
@@ -79,6 +78,8 @@ const BookingForm = (): JSX.Element | null => {
     email: '',
     phone: ''
   });
+  // Track if the current step is valid
+  const [stepValid, setStepValid] = useState(false);
   
   // Don't return early here - move the conditional rendering to the JSX
 
@@ -115,7 +116,28 @@ const BookingForm = (): JSX.Element | null => {
     }));
   };
 
-  const nextStep = () => setStep(prev => prev + 1);
+  // When the booking form opens, pre-fill the destination if selectedDestination is set
+  useEffect(() => {
+    if (isBookingOpen && selectedDestination) {
+      setFormData(prev => ({ ...prev, destination: selectedDestination }));
+    }
+  }, [isBookingOpen, selectedDestination]);
+
+  // Re-validate whenever formData or step changes
+  useEffect(() => {
+    setStepValid(validateStep(step));
+    // We don't want to show errors on every keystroke, so don't setErrors here
+    // Only update stepValid
+    // eslint-disable-next-line
+  }, [formData, step]);
+
+  const nextStep = () => {
+    if (validateStep(step)) {
+      setStep(prev => prev + 1);
+    } else {
+      setErrors(errors => ({ ...errors })); // Show errors if not valid
+    }
+  };
   const prevStep = () => setStep(prev => prev - 1);
 
   const validateStep = (currentStep: number): boolean => {
@@ -156,6 +178,7 @@ const BookingForm = (): JSX.Element | null => {
     
     if (!validateStep(step)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      setErrors(errors => ({ ...errors }));
       return;
     }
     
@@ -204,206 +227,56 @@ const BookingForm = (): JSX.Element | null => {
       default:
         return <div>Invalid step</div>;
       case 1:
+        const filteredDestinations = destinations.filter(dest =>
+          dest.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
         return (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold mb-4">Where would you like to go?</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {DESTINATIONS.map((destination) => (
-                <button
-                  key={destination}
-                  type="button"
-                  onClick={() => setFormData({ ...formData, destination })}
-                  className={`p-4 border rounded-lg text-center transition-colors ${
-                    formData.destination === destination
-                      ? 'bg-red-100 border-red-500 text-red-700'
-                      : 'border-gray-200 hover:border-red-300'
-                  }`}
-                >
-                  {destination}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Travel Month</label>
-              <select
-                name="travelMonth"
-                value={formData.travelMonth}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                required
-              >
-                <option value="">Select a month</option>
-                {MONTHS.map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
-              <input
-                type="date"
-                name="departureDate"
-                value={formData.departureDate}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                required
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Departure City</label>
+            {selectedDestination ? (
               <input
                 type="text"
-                name="departureCity"
-                value={formData.departureCity}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                placeholder="Enter your departure city"
-                required
+                value={selectedDestination}
+                disabled
+                className="w-full p-3 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
               />
-            </div>
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Trip Duration</label>
-              <select
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                required
-              >
-                <option value="">Select duration</option>
-                <option value="3-5 days">3-5 days</option>
-                <option value="1 week">1 week</option>
-                <option value="2 weeks">2 weeks</option>
-                <option value="3+ weeks">3+ weeks</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Traveling With</label>
-              <div className="grid grid-cols-2 gap-3">
-                {['Solo', 'Couple', 'Family', 'Friends'].map((option) => {
-                  const value = option.toLowerCase() as TravelWith;
-                  return (
+            ) : (
+              <>
+                <input
+                  type="text"
+                  placeholder="Search for a destination..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full p-3 border rounded-lg"
+                />
+                {errors.destination && (
+                  <p className="text-red-500 text-sm -mt-2 mb-2">{errors.destination}</p>
+                )}
+                <div className="grid grid-cols-2 gap-4 max-h-60 overflow-y-auto pr-2">
+                  {filteredDestinations.map((dest) => (
                     <button
-                      key={value}
+                      key={dest.id}
                       type="button"
-                      onClick={() => setFormData({ ...formData, travelWith: value })}
-                      className={`p-3 border rounded-lg text-center transition-colors ${
-                        formData.travelWith === value
-                          ? 'bg-red-100 border-red-500 text-red-700'
-                          : 'border-gray-200 hover:border-red-300'
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, destination: dest.name }));
+                        setErrors(prev => ({ ...prev, destination: '' }));
+                      }}
+                      className={`p-4 border rounded-lg transition-colors text-left ${
+                        formData.destination === dest.name
+                          ? 'border-red-500 bg-red-50 text-red-700' 
+                          : 'hover:bg-gray-50 border-gray-200'
                       }`}
                     >
-                      {option}
+                      {dest.name}
                     </button>
-                  );
-                })}
-              </div>
-            </div>
-            {formData.travelWith && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Number of {formData.travelWith === 'solo' ? 'Persons' : formData.travelWith === 'couple' ? 'People' : formData.travelWith}
-                </label>
-                <input
-                  type="number"
-                  name="numberOfPersons"
-                  value={formData.numberOfPersons}
-                  onChange={handleChange}
-                  min="1"
-                  max={formData.travelWith === 'solo' ? '1' : '20'}
-                  className="w-full p-3 border rounded-lg"
-                  required
-                />
-              </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         );
 
-      case 4:
-        return (
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                placeholder="Your full name"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                placeholder="your.email@example.com"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-                placeholder="1234567890"
-                required
-              />
-            </div>
-          </div>
-        );
-
-      case 1:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-4">Where would you like to go?</h3>
-            {errors.destination && (
-              <p className="text-red-500 text-sm -mt-2 mb-2">{errors.destination}</p>
-            )}
-            <div className="grid grid-cols-2 gap-4">
-              {DESTINATIONS.map((dest: string) => (
-                <button
-                  key={dest}
-                  type="button"
-                  onClick={() => {
-                    setFormData(prev => ({ ...prev, destination: dest }));
-                    setErrors(prev => ({ ...prev, destination: '' }));
-                  }}
-                  className={`p-4 border rounded-lg transition-colors text-left ${
-                    formData.destination === dest 
-                      ? 'border-red-500 bg-red-50 text-red-700' 
-                      : 'hover:bg-gray-50 border-gray-200'
-                  }`}
-                >
-                  {dest}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
       case 2:
         return (
           <div className="space-y-4">
@@ -422,6 +295,9 @@ const BookingForm = (): JSX.Element | null => {
                   <option key={month} value={month}>{month}</option>
                 ))}
               </select>
+              {errors.travelMonth && (
+                <p className="text-red-500 text-sm mt-1">{errors.travelMonth}</p>
+              )}
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
@@ -432,7 +308,11 @@ const BookingForm = (): JSX.Element | null => {
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg"
                 required
+                min={new Date().toISOString().split('T')[0]}
               />
+              {errors.departureDate && (
+                <p className="text-red-500 text-sm mt-1">{errors.departureDate}</p>
+              )}
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Departure City</label>
@@ -442,11 +322,16 @@ const BookingForm = (): JSX.Element | null => {
                 value={formData.departureCity}
                 onChange={handleChange}
                 className="w-full p-3 border rounded-lg"
+                placeholder="Enter your departure city"
                 required
               />
+              {errors.departureCity && (
+                <p className="text-red-500 text-sm mt-1">{errors.departureCity}</p>
+              )}
             </div>
           </div>
         );
+
       case 3:
         return (
           <div className="space-y-4">
@@ -462,6 +347,9 @@ const BookingForm = (): JSX.Element | null => {
                 min="1"
                 required
               />
+              {errors.duration && (
+                <p className="text-red-500 text-sm mt-1">{errors.duration}</p>
+              )}
             </div>
             <div className="space-y-2">
               <p className="font-medium">Who are you traveling with?</p>
@@ -481,6 +369,9 @@ const BookingForm = (): JSX.Element | null => {
                   </label>
                 ))}
               </div>
+              {errors.travelWith && (
+                <p className="text-red-500 text-sm mt-1">{errors.travelWith}</p>
+              )}
               {(formData.travelWith === 'family' || formData.travelWith === 'friends') && (
                 <div className="mt-2">
                   <label className="block mb-1">Number of Persons</label>
@@ -493,42 +384,64 @@ const BookingForm = (): JSX.Element | null => {
                     className="w-full p-2 border rounded-lg"
                     required
                   />
+                  {errors.numberOfPersons && (
+                    <p className="text-red-500 text-sm mt-1">{errors.numberOfPersons}</p>
+                  )}
                 </div>
               )}
             </div>
           </div>
         );
+
       case 4:
         return (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold mb-4">Your Details</h3>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full Name"
-              className="w-full p-3 border rounded-lg mb-3"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email Address"
-              className="w-full p-3 border rounded-lg mb-3"
-              required
-            />
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              className="w-full p-3 border rounded-lg"
-              required
-            />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+                placeholder="Your full name"
+                required
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+                placeholder="your.email@example.com"
+                required
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+                placeholder="1234567890"
+                required
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
+            </div>
           </div>
         );
       }
@@ -541,7 +454,7 @@ const BookingForm = (): JSX.Element | null => {
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 overflow-y-auto">
-        <div className="flex min-h-full items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
           <div 
             className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
             onClick={closeBooking}
@@ -603,7 +516,7 @@ const BookingForm = (): JSX.Element | null => {
                       'px-6 py-2 text-sm',
                       isSubmitting && 'opacity-75 cursor-not-allowed'
                     )}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !stepValid}
                   >
                     {isSubmitting ? (
                       <>

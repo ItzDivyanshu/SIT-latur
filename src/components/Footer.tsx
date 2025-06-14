@@ -39,16 +39,7 @@ const Footer: React.FC = () => {
                 <a href="/about" className="text-white/80 hover:text-orange-400 transition-colors">About Us</a>
               </li>
               <li>
-                <a href="/packages" className="text-white/80 hover:text-orange-400 transition-colors">Travel Packages</a>
-              </li>
-              <li>
-                <a href="/destinations" className="text-white/80 hover:text-orange-400 transition-colors">Destinations</a>
-              </li>
-              <li>
                 <a href="/contact" className="text-white/80 hover:text-orange-400 transition-colors">Contact Us</a>
-              </li>
-              <li>
-                <a href="/terms" className="text-white/80 hover:text-orange-400 transition-colors">Terms & Conditions</a>
               </li>
             </ul>
           </div>
@@ -83,16 +74,16 @@ const Footer: React.FC = () => {
             <h3 className="text-xl font-bold mb-4">Contact Info</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 text-orange-400 mr-2 mt-0.5" />
-                <span className="text-white/80">123 Travel Street, Latur, Maharashtra, India</span>
+                <MapPin className="h-6 w-6 text-orange-400 mr-2 mt-0.5 flex-shrink-0" />
+                <span className="text-white/80">Shop No.02, Avanti Nagar Ring Road, Beside Kailash Bar, Opp. MIDC Police Station, MIDC, Latur, Maharashtra – 413512</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-orange-400 mr-2" />
-                <span className="text-white/80">+91 98765 43210</span>
+                <span className="text-white/80">+91 8178840574</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-orange-400 mr-2" />
-                <span className="text-white/80">info@sitlatur.com</span>
+                <span className="text-white/80">southinternationaltravels@gmail.com</span>
               </li>
             </ul>
           </div>

@@ -5,8 +5,8 @@ import { ArrowRight, Calendar, MapPin } from 'lucide-react';
 const TravelPackages: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'domestic' | 'international'>('domestic');
   
-  const domesticPackages = destinations.filter(dest => dest.category === 'domestic');
-  const internationalPackages = destinations.filter(dest => dest.category === 'international');
+  const domesticPackages = [...destinations].filter(dest => dest.category === 'domestic');
+  const internationalPackages = [...destinations].filter(dest => dest.category === 'international');
   
   const displayPackages = activeTab === 'domestic' ? domesticPackages : internationalPackages;
 
@@ -15,7 +15,7 @@ const TravelPackages: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-            Our Best-Selling Travel Packages
+            Our <span className="text-[#FF0000]">Best-Selling</span> Travel Packages
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Carefully curated experiences to make your travel dreams come true. All inclusive packages with the best prices guaranteed.
@@ -80,24 +80,15 @@ const TravelPackages: React.FC = () => {
                     <span className="text-red-600 font-bold">{pkg.price}</span>
                   </div>
                   <a 
-                    href={`/packages/${pkg.id}`}
-                    className="text-gray-900 hover:text-gray-700 flex items-center text-sm font-medium transition-colors"
+                    href={`/destinations/${pkg.id}`}
+                    className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                   >
-                    View Details <ArrowRight className="ml-1 h-4 w-4" />
+                    Book Now <ArrowRight className="ml-1 h-4 w-4" />
                   </a>
                 </div>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <a 
-            href={activeTab === 'domestic' ? "/domestic-packages" : "/international-packages"}
-            className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-md hover:shadow-lg border-2 border-transparent hover:border-red-800"
-          >
-            View Details <ArrowRight className="ml-2 h-4 w-4" />
-          </a>
         </div>
       </div>
     </section>
